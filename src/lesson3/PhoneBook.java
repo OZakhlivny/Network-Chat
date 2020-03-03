@@ -3,23 +3,23 @@ package lesson3;
 import java.util.*;
 
 public class PhoneBook {
-    private HashMap<String, String> records;
+    private TreeMap<String, Set<String>> records;
 
     public PhoneBook() {
-        records = new HashMap<>();
+        records = new TreeMap<>();
     }
 
-    public void add(String phoneNumber, String surname){
-        records.put(phoneNumber, surname);
+    public void add(String surname, String phoneNumber)
+    {
+        get(surname).add(phoneNumber);
     }
 
     public Set<String> get(String surname){
-        Set<String> phoneNumbers = new HashSet<>();
-        for(Map.Entry<String, String> record : records.entrySet()) {
-            if (Objects.equals(surname, record.getValue())) phoneNumbers.add(record.getKey());
-        }
+        return records.computeIfAbsent(surname, key -> new HashSet<>());
+    }
 
-        return phoneNumbers;
+    public Set<String> getSurnamesInPhoneBook(){
+        return records.keySet();
     }
 }
 

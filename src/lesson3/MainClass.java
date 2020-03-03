@@ -44,16 +44,16 @@ public class MainClass {
     public static void task2(){
         PhoneBook phoneBook = new PhoneBook();
 
-        phoneBook.add("+7(999)123-123-12", "Иванов");
-        phoneBook.add("+7(999)321-321-21", "Петров");
-        phoneBook.add("+7(999)111-222-33", "Сидоров");
-        phoneBook.add("+7(999)555-666-77", "Иванов");
-        phoneBook.add("+7(999)333-111-77", "Иванов");
-        phoneBook.add("+7(999)888-321-21", "Петров");
+        phoneBook.add("Иванов", "+7(999)123-123-12");
+        phoneBook.add("Петров", "+7(999)321-321-21");
+        phoneBook.add("Сидоров", "+7(999)111-222-33");
+        phoneBook.add("Иванов", "+7(999)555-666-77");
+        phoneBook.add("Иванов", "+7(999)333-111-77");
+        phoneBook.add("Петров", "+7(999)888-321-21");
 
-        System.out.println("Телефонные номера под фамилией Иванов: " + phoneBook.get("Иванов"));
-        System.out.println("Телефонные номера под фамилией Петров: " + phoneBook.get("Петров"));
-        System.out.println("Телефонные номера под фамилией Сидоров: " + phoneBook.get("Сидоров"));
+        Set<String> surnameList = phoneBook.getSurnamesInPhoneBook();
+        for(String surname : surnameList)
+            System.out.printf("Телефонные номера под фамилией %s: %s\n", surname, phoneBook.get(surname));
 
     }
 
