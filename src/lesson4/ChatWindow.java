@@ -40,7 +40,7 @@ public class ChatWindow {
         String selectedSpeaker = contactField.getSelectedValue();
         if (selectedSpeaker != null) {
             String textFromField = messageField.getText();
-            if (!textFromField.isEmpty()) {
+            if (!textFromField.isBlank()) {
                 chatListModel.addElement(String.format("To \'%s\': %s", selectedSpeaker, textFromField));
                 messageField.setText("");
                 chatListModel.addElement(String.format("From \'%s\': accepted!", selectedSpeaker));
