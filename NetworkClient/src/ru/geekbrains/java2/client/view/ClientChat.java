@@ -5,6 +5,7 @@ import ru.geekbrains.java2.client.controller.ClientController;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public class ClientChat extends JFrame {
 
@@ -42,12 +43,18 @@ public class ClientChat extends JFrame {
         if (message.isEmpty()) {
             return;
         }
-        String selectedUser = usersList.getSelectedValue();
-        String fullMessage = selectedUser == null ? message : "/private " + selectedUser + " " + message;
-        appendOwnMessage(fullMessage);
-        controller.sendMessage(fullMessage);
+
+        appendOwnMessage(message);
+
+        if (usersList.getSelectedIndex() < 1) {
+            controller.sendMessageToAllUsers(message);
+        }
+        else {
+            String username = usersList.getSelectedValue();
+            controller.sendPrivateMessage(username, message);
+        }
+
         messageTextField.setText(null);
-        usersList.clearSelection();
     }
 
     public void appendMessage(String message) {
@@ -62,5 +69,15 @@ public class ClientChat extends JFrame {
         appendMessage("Me: " + message);
     }
 
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(this, "Failed to send message!");
+    }
 
+    public void updateUsers(List<String> users) {
+        SwingUtilities.invokeLater(() -> {
+            DefaultListModel<String> model = new DefaultListModel<>();
+            model.addAll(users);
+            usersList.setModel(model);
+        });
+    }
 }
