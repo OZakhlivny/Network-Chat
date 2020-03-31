@@ -1,10 +1,7 @@
 package ru.geekbrains.java2.client.model;
 
 import ru.geekbrains.java2.client.Command;
-import ru.geekbrains.java2.client.command.AuthCommand;
-import ru.geekbrains.java2.client.command.ErrorCommand;
-import ru.geekbrains.java2.client.command.MessageCommand;
-import ru.geekbrains.java2.client.command.UpdateUsersListCommand;
+import ru.geekbrains.java2.client.command.*;
 import ru.geekbrains.java2.client.controller.AuthEvent;
 import ru.geekbrains.java2.client.controller.ClientController;
 import ru.geekbrains.java2.client.controller.MessageHandler;
@@ -75,6 +72,11 @@ public class NetworkService {
                             UpdateUsersListCommand commandData = (UpdateUsersListCommand) command.getData();
                             List<String> users = commandData.getUsers();
                             controller.updateUsersList(users);
+                            break;
+                        }
+                        case SET_NEW_NICKNAME:{
+                            SetNewNicknameCommand commandData = (SetNewNicknameCommand) command.getData();
+                            //controller.setUserName(commandData.getNewNickname());
                             break;
                         }
                         default:

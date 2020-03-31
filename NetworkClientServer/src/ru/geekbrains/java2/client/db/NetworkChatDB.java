@@ -3,7 +3,7 @@ package ru.geekbrains.java2.client.db;
 import java.sql.*;
 
 public class NetworkChatDB {
-    private static final String DB_URL = "jdbc:sqlite:C:\\SQLlite\\db\\NetworkChat.db";
+    private static final String DB_URL = "jdbc:sqlite:NetworkClientServer/NetworkChat.db";
     private static Connection connection;
     private static Statement statement;
     private static ResultSet resultSet;
@@ -19,6 +19,17 @@ public class NetworkChatDB {
         resultSet = statement.executeQuery(String.format("SELECT nickname FROM users WHERE login=\"%s\" AND password=\"%s\";", login, password));
         if(resultSet.next()) nickname = resultSet.getString("nickname");
         return nickname;
+    }
+
+    public static String changeNickname(String oldNickname, String newNickname) throws SQLException {
+        String errorString = "Error during changing the nickname!";
+        resultSet = statement.executeQuery(String.format("SELECT nickname FROM users WHERE nickname=\"%s\";", newNickname));
+        if(!resultSet.next()){
+            if(statement.executeUpdate(String.format("UPDATE users SET nickname=\"%s\" WHERE nickname=\"%s\";", newNickname, oldNickname)) > 0)
+                errorString = null;
+        } else errorString = String.format("Nickname \"%s\" is busy!", newNickname);
+
+        return errorString;
     }
 
     public static void closeConnection() throws SQLException {

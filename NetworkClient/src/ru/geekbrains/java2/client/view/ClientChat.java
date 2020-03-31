@@ -1,10 +1,14 @@
 package ru.geekbrains.java2.client.view;
 
 import ru.geekbrains.java2.client.controller.ClientController;
+import ru.geekbrains.java2.client.db.NetworkChatDB;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.SQLException;
 import java.util.List;
 
 public class ClientChat extends JFrame {
@@ -24,6 +28,15 @@ public class ClientChat extends JFrame {
         setSize(640, 480);
         setLocationRelativeTo(null);
         setContentPane(mainPanel);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Options");
+        JMenuItem changeNicknameMenuItem = new JMenuItem("Change Nickname");
+        changeNicknameMenuItem.addActionListener(e -> changeChatNickname());
+        menu.add(changeNicknameMenuItem);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
         addListeners();
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -79,5 +92,24 @@ public class ClientChat extends JFrame {
             model.addAll(users);
             usersList.setModel(model);
         });
+    }
+
+    public void changeChatNickname(){
+        String newNickname = "";
+        newNickname = JOptionPane.showInputDialog("Input new nickname:").trim();
+        if(!newNickname.isEmpty()) {
+            try {
+                NetworkChatDB.connectToDB();
+                String result = NetworkChatDB.changeNickname(controller.getUsername(), newNickname);
+                if (result == null){
+                    controller.sendSetNewNickname(controller.getUsername(), newNickname);
+                    setTitle(newNickname);
+                }
+                else JOptionPane.showMessageDialog(this, result);
+                NetworkChatDB.closeConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else JOptionPane.showMessageDialog(this, "Input string is empty!");
     }
 }

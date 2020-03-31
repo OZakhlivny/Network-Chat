@@ -44,7 +44,7 @@ public class ClientController {
         clientChat.setVisible(true);
     }
 
-    private void setUserName(String nickname) {
+    public void setUserName(String nickname) {
         this.nickname = nickname;
     }
 
@@ -75,6 +75,15 @@ public class ClientController {
             networkService.sendCommand(privateMessageCommand(username, message));
         } catch (IOException e) {
             showErrorMessage(e.getMessage());
+        }
+    }
+
+    public void sendSetNewNickname(String oldNickname, String newNickname){
+        try {
+            setUserName(newNickname);
+            networkService.sendCommand(setNewNicknameCommand(oldNickname, newNickname));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

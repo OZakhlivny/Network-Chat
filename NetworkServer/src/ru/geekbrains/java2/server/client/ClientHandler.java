@@ -5,6 +5,7 @@ import ru.geekbrains.java2.client.CommandType;
 import ru.geekbrains.java2.client.command.AuthCommand;
 import ru.geekbrains.java2.client.command.BroadcastMessageCommand;
 import ru.geekbrains.java2.client.command.PrivateMessageCommand;
+import ru.geekbrains.java2.client.command.SetNewNicknameCommand;
 import ru.geekbrains.java2.server.NetworkServer;
 
 import java.io.*;
@@ -87,6 +88,14 @@ public class ClientHandler {
                     BroadcastMessageCommand commandData = (BroadcastMessageCommand) command.getData();
                     String message = commandData.getMessage();
                     networkServer.broadcastMessage(Command.messageCommand(nickname, message), this);
+                    break;
+                }
+                case SET_NEW_NICKNAME:{
+                    SetNewNicknameCommand commandData = (SetNewNicknameCommand) command.getData();
+                    nickname = commandData.getNewNickname();
+                    networkServer.broadcastMessage(Command.updateUsersListCommand(networkServer.getAllUserNames()), null);
+                    String newNicknameMessage = String.format("User \"%s\" changed nickname to \"%s\"", commandData.getOldNickname(), nickname);
+                    networkServer.broadcastMessage(Command.messageCommand("Service message", newNicknameMessage), this);
                     break;
                 }
                 default:

@@ -60,7 +60,7 @@ public class NetworkServer {
             }
         }
     }
-    private List<String> getAllUserNames() {
+    public List<String> getAllUserNames() {
         List<String> userNames = new LinkedList<>();
         for (ClientHandler clientHandler : clients) {
             userNames.add(clientHandler.getNickname());
