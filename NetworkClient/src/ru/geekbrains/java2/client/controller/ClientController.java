@@ -1,17 +1,22 @@
 package ru.geekbrains.java2.client.controller;
 
+import ru.geekbrains.java2.client.db.NetworkChatDB;
+import ru.geekbrains.java2.client.log.LogFileClass;
 import ru.geekbrains.java2.client.model.NetworkService;
 import ru.geekbrains.java2.client.view.AuthDialog;
 import ru.geekbrains.java2.client.view.ClientChat;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.geekbrains.java2.client.Command.*;
 
 public class ClientController {
 
+    private static final int historyLinesCount = 10;
     private final NetworkService networkService;
     private final AuthDialog authDialog;
     private final ClientChat clientChat;
@@ -41,6 +46,9 @@ public class ClientController {
     private void openChat() {
         authDialog.dispose();
         networkService.setMessageHandler(clientChat::appendMessage);
+        List<String> chatHistory = new ArrayList<>();
+        LogFileClass.getLogHistoryLastLines(getLoginByNickName(), chatHistory, historyLinesCount);
+        clientChat.fillChatTextArea(chatHistory);
         clientChat.setVisible(true);
     }
 
@@ -87,15 +95,6 @@ public class ClientController {
         }
     }
 
- /*   public void sendMessage(String message) {
-        try {
-            networkService.sendMessage(message);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Failed to send message!");
-            e.printStackTrace();
-        }
-    }*/
-
     public void showErrorMessage(String errorMessage) {
         if (clientChat.isActive()) {
             clientChat.showError(errorMessage);
@@ -118,5 +117,17 @@ public class ClientController {
 
     public String getUsername() {
         return nickname;
+    }
+
+    public String getLoginByNickName(){
+        String result = null;
+        try {
+            NetworkChatDB.connectToDB();
+            result = NetworkChatDB.getLogin(nickname);
+            NetworkChatDB.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

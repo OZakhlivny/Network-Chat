@@ -38,4 +38,16 @@ public class NetworkChatDB {
         connection.close();
     }
 
+    public static String getLogin (String nickname) throws SQLException{
+        String login = null;
+        resultSet = statement.executeQuery(String.format("SELECT login FROM users WHERE nickname=\"%s\";", nickname));
+        if(resultSet.next()) login = resultSet.getString("login");
+        return login;
+    }
+
+    public static boolean isRestrictedWord(String word) throws SQLException {
+        resultSet = statement.executeQuery(String.format("SELECT id FROM restricted_words WHERE \"%s%%\" LIKE UPPER(TRIM(word))||\"%%\";", word.trim().toUpperCase()));
+        return resultSet.next();
+    }
+
 }

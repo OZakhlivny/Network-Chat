@@ -2,6 +2,7 @@ package ru.geekbrains.java2.client.view;
 
 import ru.geekbrains.java2.client.controller.ClientController;
 import ru.geekbrains.java2.client.db.NetworkChatDB;
+import ru.geekbrains.java2.client.log.LogFileClass;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -56,7 +57,7 @@ public class ClientChat extends JFrame {
         if (message.isEmpty()) {
             return;
         }
-
+        message = censorTheMessage(message);
         appendOwnMessage(message);
 
         if (usersList.getSelectedIndex() < 1) {
@@ -74,6 +75,7 @@ public class ClientChat extends JFrame {
         SwingUtilities.invokeLater(() -> {
             chatText.append(message);
             chatText.append(System.lineSeparator());
+            LogFileClass.writeLineToLog(controller.getLoginByNickName(), message);
         });
     }
 
@@ -111,5 +113,29 @@ public class ClientChat extends JFrame {
                 e.printStackTrace();
             }
         } else JOptionPane.showMessageDialog(this, "Input string is empty!");
+    }
+
+    public void fillChatTextArea(List<String> list){
+        if(list.size() > 0) {
+            for (String line : list) {
+                chatText.append(line);
+                chatText.append(System.lineSeparator());
+            }
+        }
+    }
+
+    public String censorTheMessage(String message){
+        try {
+            NetworkChatDB.connectToDB();
+            String[] messageParts = message.split("[\\W]+");
+            for(String word : messageParts){
+                if(NetworkChatDB.isRestrictedWord(word))
+                    message = message.replaceAll(word, String.format("%c<censored>%c", word.charAt(0), word.charAt(word.length()-1)));
+            }
+            NetworkChatDB.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 }
