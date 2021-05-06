@@ -44,7 +44,7 @@ public class NetworkServer {
         return authService;
     }
 
-    public /*synchronized*/ void broadcastMessage(Command message, ClientHandler owner) throws IOException {
+    public void broadcastMessage(Command message, ClientHandler owner) throws IOException {
         for (ClientHandler client : clients) {
             if(client != owner) {
                 client.sendMessage(message);
@@ -68,13 +68,13 @@ public class NetworkServer {
         return userNames;
     }
 
-    public /*synchronized*/ void subscribe(ClientHandler clientHandler) throws IOException {
+    public void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
         List<String> users = getAllUserNames();
         broadcastMessage(Command.updateUsersListCommand(users), null);
     }
 
-    public /*synchronized*/ void unsubscribe(ClientHandler clientHandler) throws IOException {
+    public void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
         List<String> users = getAllUserNames();
         broadcastMessage(Command.updateUsersListCommand(users), null);

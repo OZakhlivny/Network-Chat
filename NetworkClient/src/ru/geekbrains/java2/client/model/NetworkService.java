@@ -9,7 +9,6 @@ import ru.geekbrains.java2.client.controller.MessageHandler;
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class NetworkService {
 
@@ -19,7 +18,6 @@ public class NetworkService {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    //private Consumer<String> messageHandler;
     private ClientController controller;
     private MessageHandler messageHandler;
     private AuthEvent successfulAuthEvent;
@@ -76,14 +74,13 @@ public class NetworkService {
                         }
                         case SET_NEW_NICKNAME:{
                             SetNewNicknameCommand commandData = (SetNewNicknameCommand) command.getData();
-                            //controller.setUserName(commandData.getNewNickname());
                             break;
                         }
                         default:
                             System.err.println("Unknown type of command: " + command.getType());
                     }
                 } catch (IOException e) {
-                    System.out.println("Поток чтения был прерван!");
+                    System.out.println("Read stream was interrupted!");
                     return;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -92,9 +89,6 @@ public class NetworkService {
         }).start();
     }
 
-    /*public void sendAuthMessage(String login, String password) throws IOException {
-        out.writeUTF(String.format("/auth %s %s", login, password));
-    }*/
 
     public void sendCommand(Command command) throws IOException {
         out.writeObject(command);

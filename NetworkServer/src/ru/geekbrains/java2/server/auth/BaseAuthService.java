@@ -3,29 +3,9 @@ package ru.geekbrains.java2.server.auth;
 import ru.geekbrains.java2.client.db.NetworkChatDB;
 
 import java.sql.SQLException;
-import java.util.List;
-
 
 public class BaseAuthService implements AuthService {
 
-/*    private static class UserData{
-        private String login;
-        private String password;
-        private String username;
-
-        public UserData(String login, String password, String username) {
-            this.login = login;
-            this.password = password;
-            this.username = username;
-        }
-    }
-
-    private static final List<UserData> USER_DATA = List.of(
-            new UserData("login1", "pass1", "username1"),
-            new UserData("login2", "pass2", "username2"),
-            new UserData("login3", "pass3", "username3")
-    );
-*/
     @Override
     public String getUsernameByLoginAndPassword(String login, String password) {
         String result = null;
@@ -37,13 +17,6 @@ public class BaseAuthService implements AuthService {
             e.printStackTrace();
         }
         return result;
-/*        for (UserData userDatum : USER_DATA) {
-            if (userDatum.login.equals(login) && userDatum.password.equals(password)) {
-                return userDatum.username;
-            }
-        }
-        return null;
- */
     }
 
     @Override
